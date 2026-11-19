@@ -521,15 +521,19 @@ export const ThreeBookshelf: React.FC<ThreeBookshelfProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
-    const isSoftwareGl = (() => {
+    let isSoftwareGl = true;
+    try {
       const gl = document.createElement('canvas').getContext('webgl2');
-      if (!gl) return true;
-      const ext = gl.getExtension('WEBGL_debug_renderer_info');
-      const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
-      const gpu = String(gl.getParameter(param));
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-      return /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
-    })();
+      if (gl) {
+        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+        const param = ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER;
+        const gpu = String(gl.getParameter(param));
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+        isSoftwareGl = /SwiftShader|llvmpipe|softpipe|Software|Basic Render/i.test(gpu);
+      }
+    } catch {
+      isSoftwareGl = true;
+    }
 
     const width = container.clientWidth || 800;
     const height = container.clientHeight || 480;
@@ -542,11 +546,16 @@ export const ThreeBookshelf: React.FC<ThreeBookshelfProps> = ({
     camera.lookAt(0, -0.1, 0);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: !isSoftwareGl,
-      alpha: true,
-      powerPreference: 'high-performance',
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: !isSoftwareGl,
+        alpha: true,
+        powerPreference: 'high-performance',
+      });
+    } catch {
+      return;
+    }
     renderer.setSize(width, height);
     renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;

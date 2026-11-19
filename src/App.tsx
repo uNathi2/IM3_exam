@@ -31,6 +31,41 @@ import {
 
 const VALID_PAGES: MagazinePage[] = ['cover', 'feature', 'issues', 'creators'];
 
+class AppErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-white text-black flex flex-col items-center justify-center p-6 text-center font-mono-custom">
+          <div className="text-xs uppercase tracking-[0.18em] text-purple-700 mb-3">
+            ÆTHER.MAG · Issue 001
+          </div>
+          <h1 className="text-xl font-bold mb-3">Display recovery needed</h1>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="px-5 py-2.5 bg-black text-white text-xs uppercase tracking-wider cursor-pointer"
+          >
+            Reload Magazine
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function readInitialPageFromHash(): MagazinePage {
   if (typeof window === 'undefined') return 'cover';
   const raw = window.location.hash.replace('#', '') as MagazinePage;
@@ -107,8 +142,16 @@ export default function App() {
     };
     window.addEventListener('aetherside_saved_updated', handleSavedUpdated);
 
+    // Hard failsafe so loader overlay never lingers on throttled tabs
+    const hardFailsafe = setTimeout(() => {
+      setLoadingProgress(100);
+      setIsLoaderFading(true);
+      setIsInitialLoading(false);
+    }, 1200);
+
     return () => {
       clearInterval(interval);
+      clearTimeout(hardFailsafe);
       if (fadeTimeout) clearTimeout(fadeTimeout);
       if (unmountTimeout) clearTimeout(unmountTimeout);
       clearInterval(weatherTimer);
@@ -171,7 +214,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#09090b] font-sans antialiased selection:bg-purple-200 selection:text-black flex flex-col">
+    <AppErrorBoundary>
+      <div className="min-h-screen bg-white text-[#09090b] font-sans antialiased selection:bg-purple-200 selection:text-black flex flex-col">
       {/* Initial Editorial Reveal */}
       {isInitialLoading && (
         <div
@@ -339,6 +383,7 @@ export default function App() {
         isOpen={isResearchModalOpen}
         onClose={() => setIsResearchModalOpen(false)}
       />
-    </div>
+      </div>
+    </AppErrorBoundary>
   );
 }
