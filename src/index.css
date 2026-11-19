@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-serif: 'Fraunces', serif;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+.font-serif-editorial {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+.font-mono-custom {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-gothic {
+  font-family: 'UnifrakturMaguntia', 'Cinzel', serif;
+}
+
+/* Custom scrollbar for clean editorial white theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Smooth noise overlay for editorial paper texture */
+.bg-grain {
+  background-image: radial-gradient(rgba(9, 9, 11, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* TouchDesigner dithering pattern effect */
+.dither-pattern {
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.01) 2px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+/* PW-Magazine inspired 12/13-column asymmetric editorial grid */
+.pwm-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .pwm-grid {
+    grid-template-columns: repeat(13, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+}
+
+.px-grid {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .px-grid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.mt-br {
+  margin-top: 1.4em;
+}

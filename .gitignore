@@ -1,0 +1,12 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+Thumbs.db
+*.log
+.env*
+!.env.example
+.aistudio/
+# Exclude unreferenced source PDFs (>100 MB PRD triggers GitHub push limit)
+public/assets/works/*.pdf

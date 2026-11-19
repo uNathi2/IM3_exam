@@ -1,0 +1,6 @@
+{
+  "name": "aetherside.mag — Interactive Editorial Magazine",
+  "description": "An interactive digital magazine and showcase presenting creative work alongside its story and process, driven by live atmospheric data and generative point-cloud environments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
